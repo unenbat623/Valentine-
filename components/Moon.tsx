@@ -10,11 +10,10 @@ interface LivingMoonProps {
 }
 
 const WHISPER_MESSAGES = [
-    "Би яг одоо чамайг мэдэрч байна.", // I can feel you right now. 
-    "Бидний зүрх нэг хэмнэлээр...", // Our hearts together...
+    "Би яг одоо чамайг бодож байна.", // I can feel you right now. 
+    "миний зүрх нэг хэмнэлээр...", // Our hearts together...
     "Чи надад итгэдэг үү?", // Do you trust me?
     "Энэ анир чимээгүй биднийх.", // This silence is ours.
-    "Чамд би яг ямар хүн бол?"
 ];
 
 export default function Moon({ status, isFocused = false, onInteraction }: LivingMoonProps) {

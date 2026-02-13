@@ -38,8 +38,9 @@ export default function SecretCinemaMode({ onToggle }: SecretCinemaModeProps) {
         <>
             <button
                 onClick={handleToggle}
-                className="fixed top-6 right-6 z-50 text-2xl opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300"
+                className="fixed top-4 right-4 md:top-6 md:right-6 z-50 text-xl md:text-2xl opacity-40 hover:opacity-100 hover:scale-110 transition-all duration-300 p-2 touch-manipulation"
                 title="Cinematic Mode"
+                aria-label="Toggle Cinematic Mode"
             >
                 🎬
             </button>

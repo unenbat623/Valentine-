@@ -97,14 +97,14 @@ export default function EndingYes() {
             </div>
 
             {/* Poetic Text */}
-            <div className="relative z-10 max-w-4xl space-y-12">
+            <div className="relative z-10 max-w-4xl space-y-12 px-4">
                 <AnimatePresence>
                     {step >= 1 && (
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 2 }}
-                            className="font-playfair text-lg md:text-3xl text-white/95 italic font-extralight tracking-[0.1em] md:tracking-widest leading-relaxed"
+                            className="font-playfair text-base sm:text-lg md:text-2xl lg:text-3xl text-white/95 italic font-extralight tracking-[0.05em] sm:tracking-[0.1em] md:tracking-widest leading-relaxed"
                         >
                             Бидний аялал эндээс эхэлж байна.
                         </motion.p>
@@ -117,7 +117,7 @@ export default function EndingYes() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 0.8, y: 0 }}
                             transition={{ duration: 2 }}
-                            className="font-playfair text-lg md:text-2xl text-white/80 italic font-extralight tracking-widest leading-relaxed"
+                            className="font-playfair text-sm sm:text-base md:text-xl lg:text-2xl text-white/80 italic font-extralight tracking-[0.05em] sm:tracking-[0.1em] md:tracking-widest leading-relaxed"
                         >
                             Хариулт нь надад харагдахгүй болгож хийсэн чамаас хариултыг нь авмаар байсан болхоор
 

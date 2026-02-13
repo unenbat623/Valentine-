@@ -97,16 +97,16 @@ export default function EndingNo() {
             </div>
 
             {/* Poetic Text */}
-            <div className="relative z-10 max-w-3xl space-y-8">
+            <div className="relative z-10 max-w-3xl space-y-8 px-4">
                 <AnimatePresence>
                     {step >= 1 && (
                         <motion.p
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 0.6, y: 0 }}
                             transition={{ duration: 1.5 }}
-                            className="font-serif text-xl md:text-2xl text-white/90 italic font-light tracking-wide leading-relaxed"
+                            className="font-serif text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 italic font-light tracking-wide leading-relaxed"
                         >
-                            “Бид нэг тэнгэр дор.”
+                            “Бидэнд дахиад боломж байгаа бол надад хэлээрэй.”
                         </motion.p>
                     )}
                 </AnimatePresence>
@@ -117,18 +117,18 @@ export default function EndingNo() {
                             initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 0.5, y: 0 }}
                             transition={{ duration: 1.5, delay: 0.5 }}
-                            className="font-serif text-lg md:text-xl text-white/70 italic font-light tracking-wide leading-relaxed"
+                            className="font-serif text-sm sm:text-base md:text-lg lg:text-xl text-white/70 italic font-light tracking-wide leading-relaxed"
                         >
                             “Би яарахгүй.<br />
-                            Миний мэдрэмж энд хэвээрээ.”
+                            Миний мэдрэмж энд чамайг хүлээж байх болно.”
                         </motion.p>
                     )}
                 </AnimatePresence>
             </div>
 
             {/* Bottom Marker */}
-            <p className="absolute bottom-6 text-white/10 text-[8px] tracking-[0.8em] uppercase font-light">
-                Reasoned Acceptance — Patience
+            <p className="absolute bottom-6 text-white/10 text-[9px] sm:text-[10px] tracking-[0.3em] sm:tracking-[0.5em] md:tracking-[0.8em] uppercase font-light px-4 text-center">
+                Надруу зүгээр л залгаад энэ бүхнийг хэлээд дуусгаарай.
             </p>
         </div>
     );

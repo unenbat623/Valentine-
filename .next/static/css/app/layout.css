@@ -605,6 +605,9 @@ video {
 .right-1\/2 {
   right: 50%;
 }
+.right-4 {
+  right: 1rem;
+}
 .right-6 {
   right: 1.5rem;
 }
@@ -613,6 +616,9 @@ video {
 }
 .top-1\/2 {
   top: 50%;
+}
+.top-4 {
+  top: 1rem;
 }
 .top-6 {
   top: 1.5rem;
@@ -933,6 +939,9 @@ video {
 .cursor-pointer {
   cursor: pointer;
 }
+.touch-manipulation {
+  touch-action: manipulation;
+}
 .resize {
   resize: both;
 }
@@ -975,8 +984,8 @@ video {
 .gap-4 {
   gap: 1rem;
 }
-.gap-8 {
-  gap: 2rem;
+.gap-6 {
+  gap: 1.5rem;
 }
 .gap-\[2px\] {
   gap: 2px;
@@ -1248,12 +1257,11 @@ video {
   -o-object-fit: cover;
      object-fit: cover;
 }
+.p-2 {
+  padding: 0.5rem;
+}
 .p-8 {
   padding: 2rem;
-}
-.px-10 {
-  padding-left: 2.5rem;
-  padding-right: 2.5rem;
 }
 .px-4 {
   padding-left: 1rem;
@@ -1275,9 +1283,13 @@ video {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 .pb-32 {
   padding-bottom: 8rem;
@@ -1361,11 +1373,11 @@ video {
 .leading-tight {
   line-height: 1.25;
 }
+.tracking-\[0\.05em\] {
+  letter-spacing: 0.05em;
+}
 .tracking-\[0\.15em\] {
   letter-spacing: 0.15em;
-}
-.tracking-\[0\.1em\] {
-  letter-spacing: 0.1em;
 }
 .tracking-\[0\.2em\] {
   letter-spacing: 0.2em;
@@ -1795,18 +1807,66 @@ body {
 
 @media (min-width: 640px) {
 
-  .sm\:gap-16 {
-    gap: 4rem;
+  .sm\:gap-8 {
+    gap: 2rem;
   }
 
-  .sm\:text-3xl {
-    font-size: 1.875rem;
-    line-height: 2.25rem;
+  .sm\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
+  .sm\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
   }
 
   .sm\:text-4xl {
     font-size: 2.25rem;
     line-height: 2.5rem;
+  }
+
+  .sm\:text-\[10px\] {
+    font-size: 10px;
+  }
+
+  .sm\:text-\[11px\] {
+    font-size: 11px;
+  }
+
+  .sm\:text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  .sm\:text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  .sm\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
+  .sm\:tracking-\[0\.1em\] {
+    letter-spacing: 0.1em;
+  }
+
+  .sm\:tracking-\[0\.25em\] {
+    letter-spacing: 0.25em;
+  }
+
+  .sm\:tracking-\[0\.2em\] {
+    letter-spacing: 0.2em;
+  }
+
+  .sm\:tracking-\[0\.4em\] {
+    letter-spacing: 0.4em;
+  }
+
+  .sm\:tracking-\[0\.5em\] {
+    letter-spacing: 0.5em;
   }
 }
 
@@ -1828,8 +1888,16 @@ body {
     right: 3rem;
   }
 
+  .md\:right-6 {
+    right: 1.5rem;
+  }
+
   .md\:top-12 {
     top: 3rem;
+  }
+
+  .md\:top-6 {
+    top: 1.5rem;
   }
 
   .md\:top-\[-120px\] {
@@ -1894,6 +1962,10 @@ body {
     justify-content: flex-start;
   }
 
+  .md\:gap-16 {
+    gap: 4rem;
+  }
+
   .md\:gap-40 {
     gap: 10rem;
   }
@@ -1915,6 +1987,11 @@ body {
   .md\:px-24 {
     padding-left: 6rem;
     padding-right: 6rem;
+  }
+
+  .md\:py-5 {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
   }
 
   .md\:text-left {
@@ -1945,6 +2022,10 @@ body {
     font-size: 10px;
   }
 
+  .md\:text-\[9px\] {
+    font-size: 9px;
+  }
+
   .md\:text-lg {
     font-size: 1.125rem;
     line-height: 1.75rem;
@@ -1969,8 +2050,20 @@ body {
     letter-spacing: 0.25em;
   }
 
+  .md\:tracking-\[0\.3em\] {
+    letter-spacing: 0.3em;
+  }
+
+  .md\:tracking-\[0\.5em\] {
+    letter-spacing: 0.5em;
+  }
+
   .md\:tracking-\[0\.6em\] {
     letter-spacing: 0.6em;
+  }
+
+  .md\:tracking-\[0\.8em\] {
+    letter-spacing: 0.8em;
   }
 
   .md\:tracking-widest {
@@ -1980,6 +2073,16 @@ body {
 
 @media (min-width: 1024px) {
 
+  .lg\:text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+
+  .lg\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+
   .lg\:text-5xl {
     font-size: 3rem;
     line-height: 1;
@@ -1988,5 +2091,10 @@ body {
   .lg\:text-7xl {
     font-size: 4.5rem;
     line-height: 1;
+  }
+
+  .lg\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 }

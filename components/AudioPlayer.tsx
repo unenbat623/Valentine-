@@ -3,7 +3,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function AudioPlayer() {
+interface AudioPlayerProps {
+    shouldAutoPlay?: boolean;
+}
+
+export default function AudioPlayer({ shouldAutoPlay = false }: AudioPlayerProps) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [showTitle, setShowTitle] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -25,25 +29,26 @@ export default function AudioPlayer() {
         };
     }, []);
 
-    // Global click listener to toggle play/pause as requested in features
+    // Auto-play when shouldAutoPlay becomes true
     useEffect(() => {
-        const handleGlobalInteraction = () => {
-            if (!audioRef.current) return;
+        const audio = audioRef.current;
+        if (!audio || !shouldAutoPlay) return;
 
-            if (audioRef.current.paused) {
-                audioRef.current.play().catch(e => console.log("Playback blocked:", e));
-            } else {
-                audioRef.current.pause();
-            }
-        };
+        // Attempt to autoplay when triggered
+        audio.play().catch(e => {
+            console.log("Autoplay blocked by browser. User interaction required:", e);
+        });
+    }, [shouldAutoPlay]);
 
-        // We use click for toggling
-        window.addEventListener('click', handleGlobalInteraction);
+    const toggleAudio = () => {
+        if (!audioRef.current) return;
 
-        return () => {
-            window.removeEventListener('click', handleGlobalInteraction);
-        };
-    }, []);
+        if (audioRef.current.paused) {
+            audioRef.current.play().catch(e => console.log("Playback blocked:", e));
+        } else {
+            audioRef.current.pause();
+        }
+    };
 
     return (
         <div className="fixed bottom-6 right-6 md:bottom-12 md:right-12 z-[100] flex flex-col items-end gap-2 pointer-events-auto">
@@ -62,6 +67,7 @@ export default function AudioPlayer() {
 
             <div className="flex items-center gap-4 pointer-events-none">
                 <motion.div
+                    onClick={toggleAudio}
                     onMouseEnter={() => setShowTitle(true)}
                     onMouseLeave={() => setShowTitle(false)}
                     initial={{ opacity: 0 }}

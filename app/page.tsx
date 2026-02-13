@@ -86,9 +86,9 @@ export default function Home() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 3, delay: 1 }}
-                            className="relative z-10 group"
+                            className="relative z-10 group py-4 px-6 touch-manipulation"
                         >
-                            <span className="font-serif text-xl md:text-2xl tracking-[0.3em] uppercase text-white/40 group-hover:text-white/80 transition-colors duration-1000">
+                            <span className="font-serif text-lg sm:text-xl md:text-2xl tracking-[0.2em] sm:tracking-[0.25em] md:tracking-[0.3em] uppercase text-white/40 group-hover:text-white/80 transition-colors duration-1000">
                                 Үргэлжлүүлэх
                             </span>
                             <div className="mt-4 h-[1px] w-0 group-hover:w-full bg-white/20 transition-all duration-1000 mx-auto" />
@@ -166,7 +166,7 @@ export default function Home() {
                 <FallingStar />
                 <CinemaBars isActive={cinematicPhase !== 'storm' || !isRevealed} />
                 <LightningEffect status={proposalStatus} phase={cinematicPhase} />
-                <AudioPlayer />
+                <AudioPlayer shouldAutoPlay={hasStarted} />
                 <Logo />
 
                 <SecretCinemaMode onToggle={setIsSecretActive} />
@@ -205,25 +205,25 @@ export default function Home() {
                     {/* Letter Scenes */}
                     <LetterScene text={"Би анх чамтай ярихдаа нэг их юм бодоогүй.\nЗүгээр л нэг хүнтэй танилцаж байна гэж бодсон.\nГэхдээ цаг өнгөрөх тусам,\nчамтай ярих тусам,\nчи миний хувьд зүгээр нэг хүн биш болсон."} />
 
-                    <LetterScene text={"Би өөрийгөө төгс илэрхийлж чаддаг хүн биш.\nЗаримдаа юу мэдэрч байгаагаа үгээр хэлэх хэцүү.\nГэхдээ чамтай ярьж эхэлснээс хойш\nминий дотор маш олон мэдрэмж төрж эхэлсэн."} />
+                    <LetterScene text={"Би өөрийгөө төгс илэрхийлж чаддаг хүн биш ээ.\nЗаримдаа юу мэдэрч байгаагаа үгээр хэлэх хэцүү байдаг.\nГэхдээ чамтай ярьж эхэлснээс хойш\nминий дотор илүү гүн мэдрэмж төрж эхэлсэн."} />
 
                     {/* Integrated Dynamic Scenes */}
                     <SceneDistance />
 
-                    <LetterScene text={"Заримдаа боддог —\nЧамд би яг ямар хүн бол?\nЧамд би хэрэгтэй юу?\nЧамд би сайн зүйл авчирч чадах уу?"} />
+                    <LetterScene text={"би заримдаа боддог —\nЧиний хувьд би яг ямар хүн бол?\nЧамд би хэрэгтэй юу?\nЧамд би сайн зүйл авчирч чадах уу?"} />
 
                     <SceneLateNight />
 
                     <LetterScene
-                        text={"Чамайг бодох тусам\nэнэ мэдрэмж илүү хүчтэй болдог.\nЗаримдаа бүр\nчамайг хайрламаар.\nЧамайг хамгаалмаар.\nЧиний төлөө өөрийгөө хүртэл золиосломоор санагддаг."}
+                        text={"Чамайг бодох тусам\nэнэ гүн мэдрэмж илүү хүчтэй болдог.\nЗаримдаа бүр\nчамайг хайрламаар.\nЧамайг хамгаалмаар.\nЧиний төлөө өөрийгөө хүртэл золиосломоор санагддаг."}
                         highlightWords={["хайрламаар", "хамгаалмаар", "золиосломоор"]}
                     />
 
-                    <LetterScene text={"Би төгс биш.\nМагадгүй би үгээр сайн илэрхийлж чаддаггүй.\nГэхдээ нэг зүйлд итгэлтэй —\nЧамд мэдэрч байгаа зүйл маань худлаа биш."} />
+                    <LetterScene text={"Би төгс хүн биш ээ.\nМагадгүй би ихэнх зүйлсийг үгээр сайн илэрхийлж чаддаггүй.\nГэхдээ нэг зүйлд итгэлтэй байна —\nЧамайг бодож мэдэрч байгаа зүйл маань худлаа биш гэдэгийг л мэдэж байна."} />
 
                     <SceneWaiting />
 
-                    <LetterScene text={"Тийм болохоор\nчамд зориулж\nэнэ бүхнийг хийж байна.\nМиний чаддаг зүйл\nмагадгүй энэ л байх."} />
+                    <LetterScene text={"Тийм болохоор\nчамд зориулж\nэнэ бүхнийг хийж байна.\nМиний чадах зүйл\nмагадгүй энэ л байх гэж бодлоо."} />
 
                     {/* The Proposal Section */}
                     <section className="min-h-screen flex items-center justify-center p-8">
@@ -235,22 +235,22 @@ export default function Home() {
                                     transition={{ duration: 3 }}
                                     className="text-center space-y-20 max-w-4xl"
                                 >
-                                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif italic font-light text-blue-50/90 leading-relaxed shadow-glow">
+                                    <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-serif italic font-light text-blue-50/90 leading-relaxed shadow-glow px-4">
                                         "Чи надтай энэ түүхийг үргэлжлүүлэх үү ?"
                                     </h2>
-                                    <div className="flex flex-col md:flex-row gap-8 sm:gap-16 justify-center items-center pointer-events-auto">
+                                    <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-16 justify-center items-center pointer-events-auto w-full px-4">
                                         <button
                                             onClick={() => handleDecision('yes')}
-                                            className="group relative px-10 md:px-16 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all duration-1000 w-full md:w-auto"
+                                            className="group relative px-8 sm:px-10 md:px-16 py-4 md:py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full transition-all duration-1000 w-full md:w-auto touch-manipulation"
                                         >
-                                            <span className="relative z-10 text-white tracking-[0.2em] md:tracking-[0.6em] uppercase text-[9px] md:text-[10px] font-medium block">
-                                                ТИЙМ — БИДНИЙ ТҮҮХИЙГ ЭХЛҮҮЛЬЕ
+                                            <span className="relative z-10 text-white tracking-[0.15em] sm:tracking-[0.2em] md:tracking-[0.6em] uppercase text-[10px] sm:text-[11px] md:text-[10px] font-medium block">
+                                                ТИЙМ — Түүхээ одооноос хамтаа бичье
                                             </span>
                                             <div className="absolute inset-0 bg-blue-400/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
                                         </button>
                                         <button
                                             onClick={() => handleDecision('no')}
-                                            className="text-white/20 hover:text-white/60 tracking-[0.5em] uppercase text-[9px] transition-colors duration-1000"
+                                            className="text-white/20 hover:text-white/60 tracking-[0.3em] sm:tracking-[0.4em] md:tracking-[0.5em] uppercase text-[10px] sm:text-[11px] md:text-[9px] transition-colors duration-1000 py-3 px-4 touch-manipulation"
                                         >
                                             Хараахан бэлэн биш байна
                                         </button>
