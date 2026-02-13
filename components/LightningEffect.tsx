@@ -3,10 +3,16 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
-export default function LightningEffect() {
+interface LightningEffectProps {
+    status?: 'standby' | 'yes' | 'no';
+    phase?: 'intro' | 'storm' | 'twilight' | 'night';
+}
+
+export default function LightningEffect({ status = 'standby', phase = 'storm' }: LightningEffectProps) {
     const [isActive, setIsActive] = useState(false);
 
     useEffect(() => {
+        if (status !== 'standby' || phase !== 'storm') return;
         // Random lightning loop
         const loop = () => {
             const delay = Math.random() * 15000 + 5000; // 5-20 seconds between flashes

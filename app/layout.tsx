@@ -1,23 +1,21 @@
-import type { Metadata } from 'next';
-import { Playfair_Display, Inter } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+// import { Playfair_Display, Inter } from 'next/font/google';
 import './globals.css';
 
-const playfair = Playfair_Display({
-    subsets: ['latin', 'cyrillic'],
-    variable: '--font-playfair',
-    display: 'swap',
-});
-
-const inter = Inter({
-    subsets: ['latin', 'cyrillic'],
-    variable: '--font-inter',
-    display: 'swap',
-});
+// System font fallbacks to avoid network issues with Google Fonts
+const playfair = { variable: '--font-playfair', className: '' };
+const inter = { variable: '--font-inter', className: '' };
 
 export const metadata: Metadata = {
     title: 'Our Story',
     description: 'A deeply emotional, cinematic romantic journey.',
-    viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+};
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
     themeColor: '#0a0e17',
 };
 

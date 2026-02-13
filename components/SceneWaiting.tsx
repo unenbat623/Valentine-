@@ -33,7 +33,7 @@ export default function SceneWaiting() {
                 <motion.h2
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 2, ease: "easeOut" }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
                     viewport={{ once: true, margin: "-100px" }}
                     className="text-2xl md:text-3xl font-playfair font-light text-slate-100 space-y-4"
                 >

@@ -63,17 +63,17 @@ export default function SceneDistance() {
                 viewport={{ once: true }}
                 transition={{ delay: 2, duration: 1.5 }}
             >
-                <h2 className="text-xl md:text-2xl font-playfair text-white font-light">
+                <h2 className="text-xl md:text-2xl font-serif text-white/90 font-light tracking-wide">
                     Different skies.
                 </h2>
-                <h2 className="text-xl md:text-2xl font-playfair text-white font-light">
+                <h2 className="text-xl md:text-3xl font-serif text-white/90 font-light tracking-wide">
                     Different time zones.
                 </h2>
-                <h2 className="text-xl md:text-2xl font-playfair text-white font-light">
+                <h2 className="text-xl md:text-2xl font-serif text-white/90 font-light tracking-wide">
                     Different mornings.
                 </h2>
                 <motion.h2
-                    className="text-2xl md:text-3xl font-playfair text-blue-200 italic mt-6"
+                    className="text-2xl md:text-4xl font-serif text-blue-200 italic mt-8 shadow-glow"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ delay: 4.5, duration: 1.5 }}

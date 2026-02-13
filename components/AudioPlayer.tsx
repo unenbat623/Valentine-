@@ -8,41 +8,66 @@ export default function AudioPlayer() {
     const [showTitle, setShowTitle] = useState(false);
     const audioRef = useRef<HTMLAudioElement | null>(null);
 
-    const toggleAudio = () => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause();
+    // Sync state with actual audio element events
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const onPlay = () => setIsPlaying(true);
+        const onPause = () => setIsPlaying(false);
+
+        audio.addEventListener('play', onPlay);
+        audio.addEventListener('pause', onPause);
+
+        return () => {
+            audio.removeEventListener('play', onPlay);
+            audio.removeEventListener('pause', onPause);
+        };
+    }, []);
+
+    // Global click listener to toggle play/pause as requested in features
+    useEffect(() => {
+        const handleGlobalInteraction = () => {
+            if (!audioRef.current) return;
+
+            if (audioRef.current.paused) {
+                audioRef.current.play().catch(e => console.log("Playback blocked:", e));
             } else {
-                audioRef.current.play().catch(e => console.log("Audio play blocked", e));
+                audioRef.current.pause();
             }
-            setIsPlaying(!isPlaying);
-        }
-    };
+        };
+
+        // We use click for toggling
+        window.addEventListener('click', handleGlobalInteraction);
+
+        return () => {
+            window.removeEventListener('click', handleGlobalInteraction);
+        };
+    }, []);
 
     return (
-        <div className="fixed bottom-12 right-12 z-[100] flex flex-col items-end gap-2">
+        <div className="fixed bottom-6 right-6 md:bottom-12 md:right-12 z-[100] flex flex-col items-end gap-2 pointer-events-auto">
             <AnimatePresence>
                 {showTitle && (
                     <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 0.6, y: 0 }}
                         exit={{ opacity: 0, y: 5 }}
-                        className="text-[9px] tracking-[0.3em] uppercase text-white/80 font-extralight mb-1"
+                        className="text-[9px] tracking-[0.3em] uppercase text-white/80 font-extralight mb-1 text-right"
                     >
-                        Радиохэд — Jigsaw Falling Into Place
+                        Cigarettes After Sex — Apocalypse
                     </motion.div>
                 )}
             </AnimatePresence>
 
-            <div className="flex items-center gap-4">
-                <motion.button
-                    onClick={toggleAudio}
+            <div className="flex items-center gap-4 pointer-events-none">
+                <motion.div
                     onMouseEnter={() => setShowTitle(true)}
                     onMouseLeave={() => setShowTitle(false)}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.4 }}
                     whileHover={{ opacity: 1 }}
-                    className="group relative flex items-center gap-3"
+                    className="group relative flex items-center gap-3 cursor-pointer pointer-events-auto"
                 >
                     <span className="text-[10px] tracking-[0.4em] uppercase text-white font-light transition-all">
                         {isPlaying ? "Дуутай" : "Дуугүй"}
@@ -62,11 +87,12 @@ export default function AudioPlayer() {
                             />
                         ))}
                     </div>
-                </motion.button>
+                </motion.div>
                 <audio
                     ref={audioRef}
                     loop
-                    src="https://archive.org/download/radiohead2008-07-01aud2/radiohead2008-07-01aud2_t21.mp3"
+                    preload="auto"
+                    src="https://archive.org/download/cigarettes-after-sex-songs-compilation_202203/Apocalypse%20-%20Cigarettes%20After%20Sex.mp3"
                 />
             </div>
 
@@ -76,3 +102,4 @@ export default function AudioPlayer() {
         </div>
     );
 }
+

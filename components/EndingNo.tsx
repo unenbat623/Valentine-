@@ -1,85 +1,135 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { RotateCw } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
 
-interface EndingNoProps {
-    onRetry: () => void;
-}
+export default function EndingNo() {
+    const [mounted, setMounted] = useState(false);
+    const [step, setStep] = useState(0);
 
-export default function EndingNo({ onRetry }: EndingNoProps) {
-    const [reason, setReason] = useState("");
-    const [submitted, setSubmitted] = useState(false);
+    // Stars positions
+    const stars = useMemo(() => {
+        return [...Array(20)].map(() => ({
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`
+        }));
+    }, []);
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        setSubmitted(true);
-    };
+    // Floating subtle orbs (memory glow)
+    const orbs = useMemo(() => {
+        return [...Array(6)].map(() => ({
+            duration: 8 + Math.random() * 4,
+            delay: Math.random() * 5,
+            left: 45 + Math.random() * 10
+        }));
+    }, []);
+
+    useEffect(() => {
+        setMounted(true);
+        const timers = [
+            setTimeout(() => setStep(1), 2500),
+            setTimeout(() => setStep(2), 6000)
+        ];
+        return () => timers.forEach(clearTimeout);
+    }, []);
+
+    if (!mounted) return null;
 
     return (
-        <section className="h-screen w-full flex flex-col items-center justify-center relative z-20 text-center px-4 overflow-hidden">
+        <div className="relative min-h-[80vh] flex flex-col items-center justify-center p-8 w-full overflow-hidden text-center">
+            {/* Background */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,#050510_0%,#000_95%)] opacity-40 rounded-3xl" />
 
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                className="max-w-xl w-full bg-black/60 backdrop-blur-md p-8 md:p-12 rounded-3xl border border-white/10 shadow-2xl relative"
-            >
-                {/* Lightning Flash Triggered by Parent maybe? Or random here logic? - Parent handles rain intensity/thunder */}
+            {/* Stars */}
+            {stars.map((star, i) => (
+                <motion.div
+                    key={i}
+                    animate={{ opacity: [0.2, 0.7, 0.2] }}
+                    transition={{ duration: 5 + Math.random() * 5, repeat: Infinity, delay: Math.random() * 5 }}
+                    className="absolute w-[1px] h-[1px] bg-white rounded-full"
+                    style={{ top: star.top, left: star.left }}
+                />
+            ))}
 
-                {!submitted ? (
-                    <form onSubmit={handleSubmit} className="space-y-8">
-                        <div className="space-y-4">
-                            <h2 className="text-2xl md:text-3xl font-playfair text-slate-300 font-light italic">
-                                "If this is your answer, I respect it."
-                            </h2>
-                            <p className="text-white/60 font-inter text-sm md:text-base">
-                                But tell me… why did your heart say no?
-                            </p>
-                        </div>
+            {/* Floating orbs */}
+            {orbs.map((orb, i) => (
+                <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 0 }}
+                    animate={{
+                        opacity: [0, 0.25, 0],
+                        y: [-20, -60],
+                        x: (i % 2 === 0 ? [0, 10, 0] : [0, -10, 0])
+                    }}
+                    transition={{
+                        duration: orb.duration,
+                        repeat: Infinity,
+                        delay: orb.delay,
+                        ease: "easeOut"
+                    }}
+                    className="absolute bottom-[15%] w-1 h-1 bg-blue-100 rounded-full blur-[1px]"
+                    style={{ left: `${orb.left}%` }}
+                />
+            ))}
 
-                        <textarea
-                            value={reason}
-                            onChange={(e) => setReason(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition min-h-[120px] resize-none font-inter text-sm"
-                            placeholder="Your thoughts..."
-                        />
-
-                        <button
-                            type="submit"
-                            className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white/80 rounded-full border border-white/10 transition uppercase tracking-widest text-xs"
-                        >
-                            Share
-                        </button>
-                    </form>
-                ) : (
+            {/* Silhouettes */}
+            <div className="absolute bottom-[10%] w-full flex justify-center pointer-events-none">
+                <div className="relative flex items-end gap-24 md:gap-96">
+                    {/* Left */}
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="space-y-8"
+                        animate={{ rotate: [-0.5, 0.5, -0.5], scale: [0.95, 0.97, 0.95] }}
+                        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                        className="relative opacity-30"
                     >
-                        <h2 className="text-2xl md:text-3xl font-playfair text-white/90 font-light">
-                            "Even if the ending hurts, I am grateful I met you."
-                        </h2>
-                        <p className="text-white/60 text-lg italic">
-                            But if there is even a small doubt... can you think about it once more?
-                        </p>
-
-                        <button
-                            onClick={onRetry}
-                            className="group relative px-8 py-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-100 rounded-full border border-blue-400/30 transition overflow-hidden"
-                        >
-                            <span className="relative z-10 flex items-center justify-center gap-2 uppercase tracking-widest text-xs font-semibold">
-                                <RotateCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
-                                Replay The Final Scene
-                            </span>
-                            <div className="absolute inset-0 bg-blue-400/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </button>
+                        <div className="w-6 h-18 bg-black rounded-t-full shadow-[0_0_12px_rgba(0,0,0,0.5)]" />
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-5 h-5 bg-black rounded-full" />
                     </motion.div>
-                )}
-            </motion.div>
+                    {/* Right */}
+                    <motion.div
+                        animate={{ rotate: [0.5, -0.5, 0.5], scale: [0.95, 0.97, 0.95] }}
+                        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                        className="relative opacity-30"
+                    >
+                        <div className="w-6 h-18 bg-black rounded-t-full shadow-[0_0_12px_rgba(0,0,0,0.5)]" />
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-5 h-5 bg-black rounded-full" />
+                    </motion.div>
+                </div>
+            </div>
 
-        </section>
+            {/* Poetic Text */}
+            <div className="relative z-10 max-w-3xl space-y-8">
+                <AnimatePresence>
+                    {step >= 1 && (
+                        <motion.p
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 0.6, y: 0 }}
+                            transition={{ duration: 1.5 }}
+                            className="font-serif text-xl md:text-2xl text-white/90 italic font-light tracking-wide leading-relaxed"
+                        >
+                            “Бид нэг тэнгэр дор.”
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {step >= 2 && (
+                        <motion.p
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 0.5, y: 0 }}
+                            transition={{ duration: 1.5, delay: 0.5 }}
+                            className="font-serif text-lg md:text-xl text-white/70 italic font-light tracking-wide leading-relaxed"
+                        >
+                            “Би яарахгүй.<br />
+                            Миний мэдрэмж энд хэвээрээ.”
+                        </motion.p>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            {/* Bottom Marker */}
+            <p className="absolute bottom-6 text-white/10 text-[8px] tracking-[0.8em] uppercase font-light">
+                Reasoned Acceptance — Patience
+            </p>
+        </div>
     );
 }

@@ -3,61 +3,56 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 interface BirdsProps {
-    status: 'standby' | 'yes' | 'no';
+    phase?: 'intro' | 'storm' | 'twilight' | 'night';
 }
 
-export default function Birds({ status }: BirdsProps) {
+export default function Birds({ phase = 'storm' }: BirdsProps) {
     const { scrollYProgress } = useScroll();
 
-    // 1. Flight paths - birds start on opposite sides and converge
-    // Bird 1: Left to Centerish
-    const bird1X = useTransform(scrollYProgress, [0, 0.8], ["-10%", status === 'yes' ? "45%" : "30%"]);
-    const bird1Y = useTransform(scrollYProgress, [0, 0.8], ["20%", status === 'yes' ? "42%" : "35%"]);
+    // flight paths for 4 birds
+    const b1X = useTransform(scrollYProgress, [0, 1], ["5%", "30%"]);
+    const b1Y = useTransform(scrollYProgress, [0, 1], ["15%", "35%"]);
 
-    // Bird 2: Right to Centerish
-    const bird2X = useTransform(scrollYProgress, [0, 0.8], ["110%", status === 'yes' ? "55%" : "70%"]);
-    const bird2Y = useTransform(scrollYProgress, [0, 0.8], ["15%", status === 'yes' ? "43%" : "25%"]);
+    const b2X = useTransform(scrollYProgress, [0, 1], ["95%", "70%"]);
+    const b2Y = useTransform(scrollYProgress, [0, 1], ["10%", "25%"]);
 
-    // 2. YES path: fly together toward moon
-    const yesScale = useTransform(scrollYProgress, [0.8, 1], [1, 0.2]); // Fading into distance
+    const b3X = useTransform(scrollYProgress, [0, 1], ["-10%", "40%"]);
+    const b3Y = useTransform(scrollYProgress, [0, 1], ["40%", "45%"]);
 
-    // 3. NO path logic (The fix for Rules of Hooks)
-    const exitOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
+    const b4X = useTransform(scrollYProgress, [0, 1], ["110%", "60%"]);
+    const b4Y = useTransform(scrollYProgress, [0, 1], ["35%", "50%"]);
+
+    const birdConfig = [
+        { x: b1X, y: b1Y, left: true, delay: 0 },
+        { x: b2X, y: b2Y, left: false, delay: 0.5 },
+        { x: b3X, y: b3Y, left: true, delay: 1.2 },
+        { x: b4X, y: b4Y, left: false, delay: 0.8 },
+    ];
 
     return (
-        <div className="fixed inset-0 pointer-events-none z-[15]">
-            {/* Bird 1 */}
-            <motion.div
-                style={{
-                    left: status === 'yes' ? (scrollYProgress.get() > 0.8 ? "48%" : bird1X) : bird1X,
-                    top: status === 'yes' ? (scrollYProgress.get() > 0.8 ? "42%" : bird1Y) : bird1Y,
-                    scale: status === 'yes' && scrollYProgress.get() > 0.8 ? yesScale : 1,
-                    opacity: status === 'no' ? exitOpacity : 1
-                }}
-                className="absolute"
-            >
-                <BirdIcon isLeft={true} status={status} />
-            </motion.div>
-
-            {/* Bird 2 */}
-            <motion.div
-                style={{
-                    left: status === 'yes' ? (scrollYProgress.get() > 0.8 ? "52%" : bird2X) : bird2X,
-                    top: status === 'yes' ? (scrollYProgress.get() > 0.8 ? "42%" : bird2Y) : bird2Y,
-                    scale: status === 'yes' && scrollYProgress.get() > 0.8 ? yesScale : 1,
-                    opacity: status === 'no' ? exitOpacity : 1
-                }}
-                className="absolute"
-            >
-                <BirdIcon isLeft={false} status={status} />
-            </motion.div>
+        <div className="fixed inset-0 pointer-events-none z-[60]">
+            {(phase === 'intro' || phase === 'storm') && birdConfig.map((bird, i) => (
+                <motion.div
+                    key={i}
+                    style={{
+                        left: bird.x,
+                        top: bird.y,
+                        scale: 1,
+                        opacity: 1
+                    }}
+                    className="absolute"
+                >
+                    <BirdIcon isLeft={bird.left} delay={bird.delay} />
+                </motion.div>
+            ))}
         </div>
     );
 }
 
-function BirdIcon({ isLeft, status }: { isLeft: boolean, status: string }) {
+function BirdIcon({ isLeft, delay = 0 }: { isLeft: boolean, delay?: number }) {
     return (
         <motion.div
+            initial={{ y: 0 }}
             animate={{
                 y: [0, -5, 0],
                 rotate: isLeft ? [0, 10, 0] : [0, -10, 0]
@@ -65,7 +60,8 @@ function BirdIcon({ isLeft, status }: { isLeft: boolean, status: string }) {
             transition={{
                 duration: 4,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut",
+                delay: delay
             }}
             className="flex flex-col items-center"
         >
@@ -74,17 +70,17 @@ function BirdIcon({ isLeft, status }: { isLeft: boolean, status: string }) {
                 <motion.div
                     animate={{ rotateZ: [-20, 40, -20] }}
                     transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute right-1/2 bottom-0 w-4 h-[2px] bg-black origin-right"
+                    className="absolute right-1/2 bottom-0 w-4 h-[2px] bg-white/40 shadow-[0_0_8px_white] origin-right"
                 />
                 {/* Right Wing */}
                 <motion.div
                     animate={{ rotateZ: [20, -40, 20] }}
                     transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute left-1/2 bottom-0 w-4 h-[2px] bg-black origin-left"
+                    className="absolute left-1/2 bottom-0 w-4 h-[2px] bg-white/40 shadow-[0_0_8px_white] origin-left"
                 />
 
                 {/* Body / Eye */}
-                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-1 bg-black rounded-full">
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-1 bg-white/40 rounded-full">
                     {/* Glowing Eye */}
                     <motion.div
                         animate={{ opacity: [0.3, 1, 0.3] }}
@@ -93,15 +89,6 @@ function BirdIcon({ isLeft, status }: { isLeft: boolean, status: string }) {
                     />
                 </div>
             </div>
-
-            {/* Visual indicator for "Yes" - soft trail or glow */}
-            {status === 'yes' && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute -inset-2 bg-blue-300/10 blur-xl rounded-full"
-                />
-            )}
         </motion.div>
     );
 }

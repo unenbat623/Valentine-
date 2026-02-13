@@ -1,99 +1,134 @@
 'use client';
 
 import { motion, useScroll, useTransform, AnimatePresence, useSpring } from 'framer-motion';
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 
 interface LivingMoonProps {
     status: 'standby' | 'yes' | 'no';
+    isFocused?: boolean;
+    onInteraction?: (focused: boolean) => void;
 }
 
 const WHISPER_MESSAGES = [
-    "Би хүлээх болно...", // I will wait...
-    "Чи хэдэн ч удаа 'үгүй' гэж хэлсэн...", // No matter how many times you say no...
-    "Би бидний түүх эхлэх хүртэл энд байх болно.", // I will be here, until our story begins.
-    "Чи бидний аялалыг хамтдаа эхлүүлэхэд бэлэн үү?" // Are you ready to begin our journey together?
+    "Би яг одоо чамайг мэдэрч байна.", // I can feel you right now. 
+    "Бидний зүрх нэг хэмнэлээр...", // Our hearts together...
+    "Чи надад итгэдэг үү?", // Do you trust me?
+    "Энэ анир чимээгүй биднийх.", // This silence is ours.
+    "Чамд би яг ямар хүн бол?"
 ];
 
-export default function Moon({ status }: LivingMoonProps) {
+export default function Moon({ status, isFocused = false, onInteraction }: LivingMoonProps) {
     const { scrollYProgress } = useScroll();
     const [clickCount, setClickCount] = useState(0);
     const [currentWhisper, setCurrentWhisper] = useState<string | null>(null);
     const [pulseTrigger, setPulseTrigger] = useState(0);
+    const whisperTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Heartbeat loop when focused
+    useEffect(() => {
+        if (isFocused) {
+            const interval = setInterval(() => {
+                setPulseTrigger(p => p + 1);
+            }, 3000); // Pulse every 3s
+            return () => clearInterval(interval);
+        }
+    }, [isFocused]);
 
     // 1. Scroll-Synced Moon Motion (Top-Left -> Center)
-    // Ease-in-out cubic like progression for position
     const moonX = useTransform(scrollYProgress,
         [0, 0.3, 0.7, 1],
-        ["-35vw", "-20vw", "-5vw", "0vw"]
+        ["-20vw", "-12vw", "-5vw", "0vw"]
     );
     const moonY = useTransform(scrollYProgress,
         [0, 0.3, 0.7, 1],
-        ["-35vh", "-20vh", "-12vh", "-8vh"] // Settle slightly above center for cinematic breathing room
+        ["-15vh", "-10vh", "-8vh", "-6vh"]
     );
 
-    // Spring physics for organic "weight"
     const springX = useSpring(moonX, { stiffness: 40, damping: 20 });
     const springY = useSpring(moonY, { stiffness: 40, damping: 20 });
 
-    // Opacity fades in over the first 12%
-    const opacity = useTransform(scrollYProgress, [0, 0.12], [0, 1]);
-    const scale = useTransform(scrollYProgress, [0, 1], [0.7, 1.3]);
+    const opacity = useTransform(scrollYProgress, [0, 0.85, 0.95], [0.4, 0.8, 1]);
+    const scrollScale = useTransform(scrollYProgress, [0, 1], [0.7, 1.1]);
+    const zoomScale = isFocused ? 1.3 : 1;
 
-    // 2. Phase Change (Half -> Full) via Curved Mask
-    const terminatorShift = useTransform(scrollYProgress, [0, 1], [50, 100]);
+    const terminatorShift = useTransform(scrollYProgress, [0, 1], [0, -100]);
 
-    // Emotional Glow Feedback
-    const glowBase = status === 'yes' ? 'rgba(255, 215, 0, 0.5)' :
-        status === 'no' ? 'rgba(148, 163, 184, 0.3)' :
-            'rgba(191, 219, 254, 0.4)';
+    const glowBase = status === 'yes' ? 'rgba(255, 200, 50, 0.55)' :
+        status === 'no' ? 'rgba(255, 191, 0, 0.35)' :
+            isFocused ? 'rgba(191, 219, 254, 0.7)' :
+                'rgba(191, 219, 254, 0.4)';
 
     const handleClick = () => {
         if (status === 'yes') return;
-
-        // Pulse moon on click
         setPulseTrigger(p => p + 1);
+        if (whisperTimerRef.current) clearTimeout(whisperTimerRef.current);
 
-        // Whisper logic
         const nextMsg = WHISPER_MESSAGES[clickCount % WHISPER_MESSAGES.length];
         setCurrentWhisper(nextMsg);
         setClickCount(prev => prev + 1);
 
-        // Hide after reading time
-        setTimeout(() => setCurrentWhisper(null), 4500);
+        whisperTimerRef.current = setTimeout(() => {
+            setCurrentWhisper(null);
+            whisperTimerRef.current = null;
+        }, 4500);
     };
 
+    useEffect(() => {
+        return () => {
+            if (whisperTimerRef.current) clearTimeout(whisperTimerRef.current);
+        };
+    }, []);
+
     return (
-        <div className="fixed inset-0 pointer-events-none z-10 flex items-center justify-center">
+        <div className="fixed inset-0 pointer-events-none z-[50] flex items-center justify-center">
+            {/* Ambient Aura when focused */}
+            <AnimatePresence>
+                {isFocused && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1.1 }}
+                        exit={{ opacity: 0, scale: 1.5 }}
+                        transition={{ duration: 3 }}
+                        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,rgba(191,219,254,0.08)_0%,transparent_70%)] blur-3xl"
+                    />
+                )}
+            </AnimatePresence>
+
             <motion.div
                 style={{
                     x: springX,
                     y: springY,
                     opacity,
-                    scale
+                    scale: scrollScale
+                }}
+                animate={{
+                    scale: scrollScale.get() * zoomScale,
+                    filter: isFocused ? "brightness(1.5) saturate(1.2)" : "brightness(1) saturate(1)"
                 }}
                 className="relative pointer-events-auto cursor-pointer"
                 onClick={handleClick}
+                onMouseEnter={() => onInteraction?.(true)}
+                onMouseLeave={() => onInteraction?.(false)}
             >
-                {/* 4. Floating Whisper Text */}
-                <div className="absolute top-[-120px] left-1/2 -translate-x-1/2 w-[350px] text-center pointer-events-none">
+                <div className="absolute top-[-80px] md:top-[-120px] left-1/2 -translate-x-1/2 w-[240px] md:w-[350px] text-center pointer-events-none">
                     <AnimatePresence mode="wait">
                         {currentWhisper && (
                             <motion.p
                                 key={currentWhisper}
                                 initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
                                 animate={{
-                                    opacity: 0.6,
+                                    opacity: 0.8,
                                     y: 0,
                                     filter: "blur(0px)",
-                                    transition: { duration: 2.5, ease: "easeOut" }
+                                    transition: { duration: 2, ease: "easeOut" }
                                 }}
                                 exit={{
                                     opacity: 0,
-                                    y: -60,
+                                    y: -20,
                                     filter: "blur(20px)",
                                     transition: { duration: 3, ease: "easeIn" }
                                 }}
-                                className="text-white font-playfair italic tracking-[0.25em] text-lg drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+                                className="text-white font-playfair italic tracking-[0.15em] md:tracking-[0.25em] text-base md:text-lg drop-shadow-[0_0_12px_rgba(255,255,255,0.6)]"
                             >
                                 {currentWhisper}
                             </motion.p>
@@ -101,26 +136,45 @@ export default function Moon({ status }: LivingMoonProps) {
                     </AnimatePresence>
                 </div>
 
-                {/* 3. Breathing & Continuous Glow Pulse */}
                 <motion.div
-                    key={pulseTrigger} // Re-trigger click pulse if needed
+                    key={pulseTrigger}
                     animate={{
-                        scale: [1, 1.015, 1],
-                        filter: [
-                            `drop-shadow(0 0 45px ${glowBase})`,
-                            `drop-shadow(0 0 75px ${glowBase})`,
-                            `drop-shadow(0 0 45px ${glowBase})`
-                        ],
-                        // Extra subtle pulse on click
+                        scale: status === 'no' ? 1 :
+                            (status === 'yes' || isFocused) ? [1, 1.05, 1.02, 1.08, 1] :
+                                [1, 1.015, 1],
+                        filter: status === 'no'
+                            ? `drop-shadow(0 0 50px ${glowBase})`
+                            : (status === 'yes' || isFocused)
+                                ? [
+                                    `drop-shadow(0 0 45px ${glowBase})`,
+                                    `drop-shadow(0 0 110px ${glowBase})`,
+                                    `drop-shadow(0 0 70px ${glowBase})`,
+                                    `drop-shadow(0 0 130px ${glowBase})`,
+                                    `drop-shadow(0 0 45px ${glowBase})`
+                                ]
+                                : [
+                                    `drop-shadow(0 0 45px ${glowBase})`,
+                                    `drop-shadow(0 0 75px ${glowBase})`,
+                                    `drop-shadow(0 0 45px ${glowBase})`
+                                ],
                         transition: {
-                            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-                            filter: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+                            scale: {
+                                duration: (status === 'yes' || isFocused) ? 1.5 : 8,
+                                repeat: status === 'no' ? 0 : Infinity,
+                                repeatDelay: (status === 'yes' || isFocused) ? 2 : 0,
+                                ease: "easeInOut"
+                            },
+                            filter: {
+                                duration: (status === 'yes' || isFocused) ? 1.5 : 8,
+                                repeat: status === 'no' ? 0 : Infinity,
+                                repeatDelay: (status === 'yes' || isFocused) ? 2 : 0,
+                                ease: "easeInOut"
+                            }
                         }
                     }}
                     className="relative"
                 >
-                    {/* Living Moon Shell */}
-                    <svg width="220" height="220" viewBox="0 0 100 100" className="md:w-64 md:h-64 overflow-visible">
+                    <svg width="180" height="180" viewBox="0 0 100 100" className="md:w-64 md:h-64 overflow-visible">
                         <defs>
                             <radialGradient id="moonBodyGradient" cx="50%" cy="50%" r="50%">
                                 <stop offset="0%" stopColor="#f8fafc" />
@@ -133,20 +187,16 @@ export default function Moon({ status }: LivingMoonProps) {
                                 <motion.ellipse
                                     cx={terminatorShift}
                                     cy="50"
-                                    rx="51"
-                                    ry="51"
+                                    rx="50"
+                                    ry="55"
                                     fill="black"
                                 />
                             </mask>
                         </defs>
 
-                        {/* Deep Shadow backing for moon (dark side visibility) */}
                         <circle cx="50" cy="50" r="48" fill="#030712" opacity="0.9" />
-
-                        {/* Visible Part of the Moon */}
                         <circle cx="50" cy="50" r="48" fill="url(#moonBodyGradient)" mask="url(#moonTerminator)" />
 
-                        {/* Surface Cratering & Shadows (Subtle Drift) */}
                         <motion.g
                             mask="url(#moonTerminator)"
                             animate={{
@@ -161,7 +211,6 @@ export default function Moon({ status }: LivingMoonProps) {
                             <circle cx="75" cy="35" r="5" fill="black" opacity="0.07" filter="blur(2px)" />
                         </motion.g>
 
-                        {/* 5. Emotional Story Particles (Rise on YES) */}
                         <AnimatePresence>
                             {status === 'yes' && (
                                 <motion.g
@@ -190,7 +239,6 @@ export default function Moon({ status }: LivingMoonProps) {
                             )}
                         </AnimatePresence>
 
-                        {/* Subtle Floating Mist across face */}
                         <motion.ellipse
                             animate={{ x: [-120, 120] }}
                             transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
@@ -198,7 +246,6 @@ export default function Moon({ status }: LivingMoonProps) {
                         />
                     </svg>
 
-                    {/* Warm YES Aura */}
                     <AnimatePresence>
                         {status === 'yes' && (
                             <motion.div
@@ -214,7 +261,6 @@ export default function Moon({ status }: LivingMoonProps) {
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Click Hint Signal (Standby only) */}
                 {status === 'standby' && clickCount === 0 && (
                     <motion.div
                         animate={{
