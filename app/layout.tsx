@@ -7,8 +7,11 @@ const playfair = { variable: '--font-playfair', className: '' };
 const inter = { variable: '--font-inter', className: '' };
 
 export const metadata: Metadata = {
-    title: 'Our Story',
+    title: 'My story with you',
     description: 'A deeply emotional, cinematic romantic journey.',
+    icons: {
+        icon: './logo.png',
+    },
 };
 
 export const viewport: Viewport = {
